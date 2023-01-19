@@ -33,28 +33,28 @@ public class CreateOrderTest extends API_methods{
         this.colorValue = colorValue;
     }
 
+    @Before
+    public void setUp(){
+        RestAssured.baseURI = SCOOTER_URL;
+    }
+
     @Parameterized.Parameters
-    public static Object[][] getTestDataCreateOrder() {
+    public static Object[][] createOrderParamTestData() {
         return new Object[][]{
                 {"Артем", "Беляев", "Пушкина, 12", "Черкизовская", "+7 912 123 45 67", 1, "2023-03-23", "Купи чипсы", null},
                 {"Артем", "Беляев", "Пушкина, 12", "Черкизовская", "+7 912 123 45 67", 2, "2023-03-23", "Купи чипсы", List.of("BLACK")},
                 {"Артем", "Беляев", "Пушкина, 12", "Черкизовская", "+7 912 123 45 67", 3, "2023-03-23", "Купи чипсы", List.of("GREY")},
-                {"Артем", "Беляев", "Пушкина, 12", "Черкизовская", "+7 912 123 45 67", 4, "2023-03-23", "Купи чипсы", List.of("BLACK", "GREY")},
+                {"Артем", "Беляев", "Пушкина, 12", "Черкизовская", "+7 912 123 45 67", 4, "2023-03-23", "Купи чипсы", List.of("BLACK", "GREY")}
         };
-    }
-
-    @Before
-    public void setUp(){
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru";
     }
 
     @DisplayName("Параметризованный тест на создание заказа")
     @Test
-    public void testTrackFieldInOrder(){
+    public void createOrderParamTest(){
         API_methods order = new API_methods();
-        ValidatableResponse emptyPasswordField  = order.getOrdersResponse(
+        ValidatableResponse orderResponse  = order.getOrdersResponse(
                 new Order(firstNameValue, lastNameValue, addressValue, metroStationValue, phoneValue, rentTimeValue, deliveryDateValue, commentValue, colorValue));
-        emptyPasswordField
+        orderResponse
                 .statusCode(201);
         MatcherAssert.assertThat("track", notNullValue());
     }

@@ -1,6 +1,5 @@
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static io.restassured.RestAssured.*;
@@ -10,13 +9,7 @@ public class ListOfOrdersTest extends API_methods{
 
     @Before
     public void setUp(){
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru";
-        createCourier();
-    }
-
-    @After
-    public void tearDown(){
-        deleteCourier();
+        RestAssured.baseURI = SCOOTER_URL;
     }
 
     @Test
@@ -25,11 +18,10 @@ public class ListOfOrdersTest extends API_methods{
         given()
                 .header("Content-type", "application/json")
                 .when()
-                .get("/api/v1/orders")
+                .get(API_ORDER)
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .body("orders", notNullValue());
-
     }
 }

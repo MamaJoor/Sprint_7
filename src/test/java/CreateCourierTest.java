@@ -1,5 +1,6 @@
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
+import io.restassured.response.ValidatableResponse;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
@@ -12,7 +13,7 @@ public class CreateCourierTest extends API_methods{
 
     @Before
     public void setUp(){
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru";
+        RestAssured.baseURI = SCOOTER_URL;
     }
 
     @After
@@ -23,13 +24,11 @@ public class CreateCourierTest extends API_methods{
     @Test
     @DisplayName("Тест на создание курьера с корректными данными")
     public void createNewCourierTest() {
-        Courier courier = new Courier("Artem123", "qwerty123", "Artem");
-        given()
-                .header("Content-type", "application/json")
-                .body(courier)
-                .when()
-                .post("/api/v1/courier")
-                .then().assertThat()
+        API_methods createCourier = new API_methods();
+        ValidatableResponse courier  = createCourier.getCourierResponse(
+                new Courier(LOGIN, PASSWORD, FIRST_NAME));
+        courier
+                .assertThat()
                 .statusCode(201)
                 .body("ok", is(true));
     }
@@ -37,18 +36,13 @@ public class CreateCourierTest extends API_methods{
     @Test
     @DisplayName("Тест на создание 2х одинаковых курьеров ")
     public void createSameCourierTest() {
-        Courier courier = new Courier("Artem123", "qwerty123", "Artem");
-        given()
-                .header("Content-type", "application/json")
-                .body(courier)
-                .when()
-                .post("/api/v1/courier");
-        given()
-                .header("Content-type", "application/json")
-                .body(courier)
-                .when()
-                .post("/api/v1/courier")
-                .then().assertThat()
+        API_methods createCourier = new API_methods();
+        ValidatableResponse courier  = createCourier.getCourierResponse(
+                new Courier(LOGIN, PASSWORD, FIRST_NAME));
+        ValidatableResponse sameCourier  = createCourier.getCourierResponse(
+                new Courier(LOGIN, PASSWORD, FIRST_NAME));
+        sameCourier
+                .assertThat()
                 .statusCode(409)
                 .body("message", CoreMatchers.equalTo("Этот логин уже используется. Попробуйте другой."));
     }
@@ -56,13 +50,11 @@ public class CreateCourierTest extends API_methods{
     @Test
     @DisplayName("Тест на создание курьера без пароля")
     public void createCourierWithoutPasswordTest() {
-        Courier courier = new Courier("Artem123", "", "Artem");
-        given()
-                .header("Content-type", "application/json")
-                .body(courier)
-                .when()
-                .post("/api/v1/courier")
-                .then().assertThat()
+        API_methods createCourier = new API_methods();
+        ValidatableResponse courier  = createCourier.getCourierResponse(
+                new Courier(LOGIN, "", FIRST_NAME));
+        courier
+                .assertThat()
                 .statusCode(400)
                 .body("message", CoreMatchers.equalTo("Недостаточно данных для создания учетной записи"));
     }
@@ -70,13 +62,11 @@ public class CreateCourierTest extends API_methods{
     @Test
     @DisplayName("Тест на создание курьера без логина")
     public void createCourierWithoutLoginTest() {
-        Courier courier = new Courier("", "qwerty123", "Artem");
-        given()
-                .header("Content-type", "application/json")
-                .body(courier)
-                .when()
-                .post("/api/v1/courier")
-                .then().assertThat()
+        API_methods createCourier = new API_methods();
+        ValidatableResponse courier  = createCourier.getCourierResponse(
+                new Courier("", PASSWORD, FIRST_NAME));
+        courier
+                .assertThat()
                 .statusCode(400)
                 .body("message", CoreMatchers.equalTo("Недостаточно данных для создания учетной записи"));
     }
