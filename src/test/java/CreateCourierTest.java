@@ -80,18 +80,4 @@ public class CreateCourierTest extends API_methods{
                 .statusCode(400)
                 .body("message", CoreMatchers.equalTo("Недостаточно данных для создания учетной записи"));
     }
-
-//    @Test
-//    @DisplayName("Тест на создание курьера без имени")
-//    public void createCourierWithoutFirstNameTest() {
-//        Courier courier = new Courier("Artem123", "qwerty123", "");
-//        given()
-//                .header("Content-type", "application/json")
-//                .body(courier)
-//                .when()
-//                .post("/api/v1/courier")
-//                .then().assertThat()
-//                .statusCode(400)
-//                .body("message", CoreMatchers.equalTo("Недостаточно данных для создания учетной записи"));
-//    } //FirstName - необязательное поле
 }

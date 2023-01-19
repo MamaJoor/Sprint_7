@@ -1,7 +1,7 @@
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class API_methods {
 
@@ -26,5 +26,14 @@ public class API_methods {
         given()
                 .when()
                 .delete("/api/v1/courier/" + id);
+    }
+    public ValidatableResponse getOrdersResponse(Order order) {
+        return given()
+                .header("Content-type", "application/json")
+                .and()
+                .body(order)
+                .when()
+                .post("/api/v1/orders")
+                .then();
     }
 }
